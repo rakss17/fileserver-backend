@@ -1,0 +1,182 @@
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Inter';
+    }
+    div {
+        background-color: #252424;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: white;
+    }
+    
+    div div:nth-child(1) {
+        color: white;
+        width: 10vw;
+        height: 10vh;
+
+    }
+    div div:nth-child(2) {
+        display: flex;
+        justify-content: flex-start;
+        color: white;
+        width: 65vw;
+        height: 65vh;
+        overflow-y: auto;
+        padding-top: auto;
+        scrollbar-width: thin;
+        scrollbar-color: #f1f1f1 #252424;
+    }
+
+    div div:nth-child(2)::-webkit-scrollbar {
+        width: 0.4vw;
+    }
+
+    div div:nth-child(2)::-webkit-scrollbar-track {
+        background: #252424;
+    }   
+
+  
+    div div:nth-child(2)::-webkit-scrollbar-thumb {
+        background: #f1f1f1;
+    }
+
+    div div:nth-child(2)::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+
+    ul.file-list {
+        list-style-type: none;
+        padding: 0;
+        color: white;
+      
+    }
+
+    ul.file-list li {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+        gap: 5vw;
+        margin-bottom: 2vh;
+    }
+
+    ul.file-list li p:nth-child(1){ 
+        height: 5vh;
+        align-items: center;
+        justify-content: flex-end;
+        display: flex;
+        flex-direction: row;
+        text-align: end;    
+        width: 8vw;
+    }
+    ul.file-list li p:nth-child(2){ 
+        height: 5vh;
+        align-items: center;
+        justify-content: flex-end;
+        display: flex;
+        flex-direction: row;
+        text-align: end;
+        width: 5.5vw;
+    }
+
+    ul.file-list li a:nth-child(1) {
+        text-decoration: none;
+        color: white;
+        width: 25vw;
+        height: 5vh;
+        align-items: center;
+        display: flex;
+    }
+
+    ul.file-list li a:hover {
+        text-decoration: underline;
+    }
+   
+
+    ul.file-list li div {
+        display: flex;
+        flex-direction: row;
+        width: 15vw;
+        height: 5vh;
+        justify-content: space-around;
+        padding: 0%;
+    }
+
+    .download-button {
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        width: 6vw;
+        height: 5vh;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+    .delete-button {
+        background-color: #E82F2F;
+        color: white;
+        border: none;
+        width: 5vw;
+        height: 5vh;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+    form.upload-form {
+        display: flex;
+        flex-direction: row;
+        gap: 5vw;
+    }
+
+    form.upload-form input[type="file"] {
+        display: flex;
+        flex-direction: row;
+        width: 25vw;
+    }
+
+    form.upload-form button[type="submit"] {
+        background-color: #4275FA;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        width: 6vw;
+        height: 5vh;
+        cursor: pointer;
+    }
+</style>
+<div>
+    <div>
+        <form method="post" enctype="multipart/form-data" class="upload-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Upload File</button>
+        </form>
+    </div>
+    <div>
+        <ul class="file-list">
+            {% for file in files %}
+            {% load file_size %}
+                <li>
+                    <a href="{{ file.file.url }}" target="_blank">{{ file.original_filename }}</a>
+                    <div>
+                        <p href="{{ file.file.url }}" target="_blank">{{ file.uploaded_at|timesince }} ago</p>
+                    <p href="{{ file.file.url }}" target="_blank">{{ file.file_size|file_size }}</p>
+                    </div>
+                    
+                    <div>
+                        <a href="{{ file.file.url }}" download><button class="download-button">Download</button></a>
+                        <a href="{% url 'delete_file' file.id %}"><button class="delete-button">Delete</button></a>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
